@@ -6,7 +6,7 @@ import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
 const PORT = process.env.PORT ?? 3008
 
 
-// ********************** DECLARANDO FUJOS HIJOS DE LOS FLUJOS HIJOS **************** //
+// ***************************** DECLARANDO FUJOS HIJOS DE LOS FLUJOS HIJOS ********************************** //
 
 // *********************** AGENDAR CITA DESDE INFO ****************************//
 
@@ -15,19 +15,38 @@ const AccionNoAgen = addKeyword('2', {sensitive:true})
     
 
 // **** FLUJOS HIJOS HIJOS PARA LA PROMO DEL MES ****//
+let name = ''
 const AccionSi = addKeyword('1', {sensitive:true})
     .addAnswer(
         [
-            'Tomaste una gran decisión😃. ¿Cual servicio deseas hacerte?\n',
-            'Por favor escribe si deseas hacerte *Manos✋*, *Pies👣* o *Combo✋👣* seguido de la fecha📆 y hora🕐 que lo deseas',
+            'Tomaste una gran decisión😃\n',
         ]
     )
+//    .addAnswer(
+//        [
+//            `Ahora escribe la posible *Fecha 📆* y *hora 🕐* de tu servicio.\n*CUIDADO☢️*\n*(Solo debes enviar un mensaje)*\nPor Ejemplo: Mañana a las 3pm`
+//        ],
+//        {capture:true}, async(ctx) => {
+//            name = ctx.body}
+//        )
+//    .addAnswer(
+//        [
+//            `Este es el resumen de tu pedido 👇\n*Servicio:* PROMO MES\n*Fecha y hora:* ${name}`
+//        ]
+//    )
+//    .addAnswer('Gracias por contar con nosotros 😄. Estamos revisando nuestra agenda📒 y pronto nos contacteremos contigo para confirmar la cita📱.')
+    
 
 const AccionNo = addKeyword('2', {sensitive:true})
     .addAnswer(
         [
-            'Lamentamos que no tomes esta increible promoción, quizas en otro momento.',
-        ]
+            'Lamentamos que no tomes esta increible promoción🥺, quizas en otro momento\n',
+            'Si deseas volver *🔙 Al Menú Principal* solo escribe el número *0*'
+        ],
+        {capture:true, delay:500}, async (ctx, {gotoFlow})  => 
+            {
+                if (ctx.body == '0') return gotoFlow(flowMenu);
+            }
     )
 
 //********************************************
@@ -37,9 +56,9 @@ const AccionNo = addKeyword('2', {sensitive:true})
 const AccionReagendar = addKeyword('1', {sensitive:true})
 .addAnswer(
     [
-        'Muchas gracias por avisarnos 🙏. Y volver a contar con nosotros.\n',
-        'Por favor escribe el servicio que te vas a realizar, *fecha📆* y *hora🕐* en que *estabas* agendad@.\n',
-        'Despues escribe el nuevo servicio *(si lo vas a cambiar)* junto con la nueva *fecha📆* y *hora🕐* en que deseas ser reagendad@.\n'
+        'Muchas gracias por avisarnos 🙏. Y volver a contar con nosotros🤗.\nDebes de seguir 2 pasos👣 muy sencillos\n',
+        '*Primero:* Por favor escribe el servicio que te *ibas* a realizar, *fecha📆* y *hora🕐* en que *estabas* agendad@.\n',
+        '*Segundo:* Despues escribe el nuevo servicio *(si lo vas a cambiar)* junto con la nueva *fecha📆* y *hora🕐* en que deseas ser reagendad@.\n'
     ]
 )
 
@@ -57,24 +76,31 @@ const AccionCancelar = addKeyword('2', {sensitive:true})
 
 
 
-// ***************************** DECLARANDO FLUJOS HIJOS ****************************** //
+// ********************************************* DECLARANDO FLUJOS HIJOS ***************************************** //
 
-// ***** FLUJO AGENDAR CITA (1)**** //
+// *********** FLUJO AGENDAR CITA (1)************** //
 const AgendarCita = addKeyword('1', {sensitive:true})
     .addAnswer(
         [
-            'Wow🙌, estoy muy feliz😃! gracias por confiar en nosotros 🙏. Te dejaré una lista de los servicios que manejamos 👇',
+            'Wow🙌, estoy muy feliz😃! gracias por confiar en nosotros 🙏',
         ]
         )
-    .addAnswer('menu:', {
-        media: '/home/sebascaste7/base-js-baileys-memory/Carta.pdf'
-        },
-        )
-    .addAnswer('¿Ya Sabes qué hacerte?🤔.\nPor favor escribe el *nombre del servicio o servicios* que deseas realizarte💅.\n*(Solo debes enviar un mensaje).*\nEj: Manos semi y pies tradicionales para dos personas',
+    .addAnswer(
+        [
+            '¿Ya Sabes qué hacerte?🤔\n',
+            'Por favor escribe el *nombre del servicio o servicios* que deseas realizarte💅.\n',
+            '*CUIDADO☢️*\n*(Solo debes enviar un mensaje)*\n',
+            '*Por Ejemplo:* Manos semi y pies tradicionales para dos personas\n',
+        ],
         {capture:true}, async(ctx, {state}) => {
             await state.update({nombre: ctx.body})}
         )
-    .addAnswer('Ahora escribe la posible *Fecha 📆* y *hora 🕐* de tu servicio.\n*(Solo debes escribir un mensaje).*\n Ej: Mañana a las 3pm',
+    .addAnswer(
+        [
+            'Ahora escribe la posible *Fecha 📆* y *hora 🕐* de tu servicio.\n',
+            '*CUIDADO☢️*\n*(Solo debes enviar un mensaje)*\n',
+            '*Por Ejemplo:* Mañana a las 3pm\n',
+        ],    
         {capture:true}, async(ctx, {state}) => {
             await state.update({fechaYhora: ctx.body})}
         )
@@ -84,12 +110,12 @@ const AgendarCita = addKeyword('1', {sensitive:true})
             await flowDynamic(`*Servicio:* ${myState.nombre}.\n*Fecha y hora:* ${myState.fechaYhora}.`)
             }    
         )
-    .addAnswer('Gracias por contar con nosotros 😄. Estamos revisando nuestra agenda y pronto nos contacteremos contigo para confirmar la cita📱.')
+    .addAnswer('Gracias por confiar en nosotros 😄. Estamos revisando nuestra agenda📒 y pronto nos contacteremos contigo para confirmar la cita📱.')
 
-//********************************
+//************************************************
 
 
-// *** FLUJO INFO DE LOS SERVICIOS (2)***//
+// ********** FLUJO INFO DE LOS SERVICIOS (2)************//
 const InfoServicios = addKeyword('2', {sensitive:true})
     .addAnswer(
         [
@@ -102,10 +128,11 @@ const InfoServicios = addKeyword('2', {sensitive:true})
     )
     .addAnswer(
         [
-            '¿Deseas hacerte algún servicio?🤔.\nEscribe el *número* que corresponda.\n',
-            '*1* - Si.\n',
-            '*2* - No.\n',
-            '*0* - *🔙Menú Principal*.\n',
+            '¿Deseas hacerte algún servicio?🤔.\n',
+            'Escribe el *número* que corresponda👇.\n',
+            '*1.* Si\n',
+            '*2.* No\n',
+            '*0.* *🔙 Menú Principal*.\n',
         ],
         {capture:true, delay:500}, async (ctx, {flowDynamic, fallBack, gotoFlow})  => 
         {
@@ -114,26 +141,25 @@ const InfoServicios = addKeyword('2', {sensitive:true})
                     await flowDynamic('*❌Por favor ingresa una opción valida❌*')
                     return fallBack()
                 }
-            else if (ctx.body == '0') return gotoFlow(flowPrincipal);
+            else if (ctx.body == '0') return gotoFlow(flowMenu);
         }
         
         , [AgendarCita,AccionNoAgen]
         )
 
-//***************************************
+//***************************************************
 
 
-// ****** FLUJO PROMOCION DEL MES (3)**** //
+// *********** FLUJO PROMOCION DEL MES (3)*************** //
 const PromoMes = addKeyword('3', {sensitive:true})
     .addAnswer(
         [
             'Por este mes de *AGOSTO*🪁 nuestra promo será la siguiente:\n',
-            'Si agendas con anticipacion el servicio de manos o pies tradicionales tendras un bono de *3mil* pesos😱😱\n',
-            'Y si agendas el combo de manos y pies tradicionales tendras un bono de *7mil* pesos😱😱\n',
-            '¿Qué deseas?🤔.\nEscribe el *número* que corresponda.\n',
-            '*1* - Aceptar la Promo.\n',
-            '*2* - Ignorar la Promo.\n',
-            '*0* - *🔙Menú Principal*.\n',
+            'Si agendas con anticipacion el servicio de *PRESS 0N* tendrás un bono de *10mil* pesos😱😱\n',
+            '¿Qué deseas?🤔 Escribe el *número* que corresponda👇.\n',
+            '*1.* ✅ Aceptar la Promo.\n',
+            '*2.* ❌ Ignorar la Promo.\n',
+            '*0.**🔙 Menú Principal*.\n',
         ],
         {capture:true}, async (ctx, {flowDynamic, fallBack, gotoFlow})  => {
             if (ctx.body != '1' && ctx.body != '2' && ctx.body != '0')
@@ -141,22 +167,22 @@ const PromoMes = addKeyword('3', {sensitive:true})
                     await flowDynamic('*❌Por favor ingresa una opción valida❌*')
                     return fallBack()
                 }
-            else if (ctx.body == '0' && ctx.body == '2') return gotoFlow(flowPrincipal);
+            else if (ctx.body == '0') return gotoFlow(flowMenu);
             }
         
         , [AccionSi,AccionNo]
     )
-//**************************************
+//*******************************************************
 
 
-// ******** FLUJO CANCELAR O REAGENDAR CITA (4)***//
+// ******** FLUJO CANCELAR O REAGENDAR CITA (4)**************//
 const CancelarCita_Reagendar = addKeyword('4', {sensitive:true})
     .addAnswer(
         [
-            'Dejame saber si deseas cancelar la cita o reagendarla. *Escribe el numero que corresponde:*\n',
-            '*1* - Reagendar mi cita.\n',
-            '*2* - Cancelar mi cita.\n',
-            '*0* - *🔙Menú Principal*.\n',
+            'Dejame saber si deseas cancelar la cita o reagendarla. *Escribe el numero que corresponde👇:*\n',
+            '*1.* 📅 Reagendar mi cita.\n',
+            '*2.* ❌ Cancelar mi cita.\n',
+            '*0.**🔙 Menú Principal*.\n',
 
         ],
         {capture:true, delay:500}, async (ctx, {flowDynamic, fallBack, gotoFlow})  => {
@@ -165,7 +191,7 @@ const CancelarCita_Reagendar = addKeyword('4', {sensitive:true})
                     await flowDynamic('*❌Por favor ingresa una opción valida❌*')
                     return fallBack()
                 }
-            else if (ctx.body == '0') return gotoFlow(flowPrincipal);
+            else if (ctx.body == '0') return gotoFlow(flowMenu);
             }
         ,[AccionReagendar,AccionCancelar]
     )
@@ -176,7 +202,7 @@ const CancelarCita_Reagendar = addKeyword('4', {sensitive:true})
 const ServicioCliente = addKeyword('5', {sensitive:true})
     .addAnswer(
         [
-            'Muchas gracias por comunicarte con servicio al cliente, mi nombre es *Alejandra*, ¿En qué te puedo ayudar?',
+            'Muchas gracias por comunicarte con servicio al cliente, mi nombre es *Alejandra💁‍♀️*, ¿En qué te puedo ayudar?',
         ]
     )
 //*********************************************
@@ -184,23 +210,22 @@ const ServicioCliente = addKeyword('5', {sensitive:true})
 
 
 
-// ******************************** FLUJO PRINCIPAL ************************************* //
+// ******************************** FLOW MENU ESPACIAL PARA RETORNAR AL MENU PRINCIPAL************************************* //
 
-const flowPrincipal = addKeyword(['hola','ola','ole','oli','buenas tardes','buenas','buenos dias','buenas quiero una cita',
-    'para agendar una cita', 'cita','por favor una cita','tienes cupo', 'una cita', 'para un cupo'])
+const flowMenu = addKeyword('*****9', {sensitive:true})
     .addAnswer(
         [
-            '🙌 Hola bienvenid@, mi nombre es *Uñitas* la *IA*🤖 de *Gold Nails Spa*💅 y fui creada para ayudarte',
+            'Volviste al menú principal🤩',
         ]
         )    
     .addAnswer(
         [
-            'Si te interesa alguna de estas opciones por favor *escribe el numero* que corresponde:\n',
-            '*1* - Para Agendar una cita con nosotros.\n',
-            '*2* - Para recibir información sobre nuestro servicios y precios.\n',
-            '*3* - Para ver la *PROMO* del mes.\n',
-            '*4* - Para Cancelar o Reagendar una cita.\n',
-            '*5* - Para comunicarte con servicio al cliente.\n',
+            'Si te interesa alguna de estas opciones por favor *escribe el número* que corresponde👇:\n',
+            '*1.* 📅 Para Agendar una cita con nosotros\n',
+            '*2.* ❓ Para recibir información sobre nuestro servicios y precios\n',
+            '*3.* 🤑 Para ver la *PROMO* del mes\n',
+            '*4.* ❌📅 Para Cancelar o Reagendar una cita\n',
+            '*5.* 📱 Para hablar con una persona\n',
         ],
         {capture:true, delay:500}, async (ctx, {flowDynamic, fallBack})  => 
         {
@@ -212,18 +237,52 @@ const flowPrincipal = addKeyword(['hola','ola','ole','oli','buenas tardes','buen
         }
         , [AgendarCita,InfoServicios,PromoMes,CancelarCita_Reagendar,ServicioCliente]
         )
-//*************************************************************************************************
+//**********************************************************************************************************************
+
+
+//********************************* FLOW PRIMER SALUDO CON MENU *****************************************/ 
+
+const flowPrincipal = addKeyword(['hola','ola','ole','oli','buenas tardes','buenas','buenos dias','buenas quiero una cita',
+    'para agendar una cita', 'cita','por favor una cita','tienes cupo', 'una cita', 'para un cupo'])
+    .addAnswer(
+        [
+            '🙌 Hola bienvenid@, Soy la *IA*🤖 de *Gold Nails Spa*💅 y fui creada para ayudarte',
+        ]
+        )    
+    .addAnswer(
+        [
+            'Si te interesa alguna de estas opciones por favor *escribe el número* que corresponde👇:\n',
+            '*1.* 📅 Para Agendar una cita con nosotros\n',
+            '*2.* ❓ Para recibir información sobre nuestro servicios y precios\n',
+            '*3.* 🤑 Para ver la *PROMO* del mes\n',
+            '*4.* ❌📅 Para Cancelar o Reagendar una cita\n',
+            '*5.* 📱 Para hablar con una persona\n',
+        ],
+        {capture:true, delay:500}, async (ctx, {flowDynamic, fallBack})  => 
+        {
+            if (ctx.body != '1' && ctx.body != '2' && ctx.body != '3' && ctx.body != '4' && ctx.body != '5')
+                {
+                    await flowDynamic('*❌Por favor ingresa una opción valida❌*')
+                    return fallBack()
+                }
+        }
+        , [AgendarCita,InfoServicios,PromoMes,CancelarCita_Reagendar,ServicioCliente]
+        )
+//*******************************************************************************************************
+
+
+
+//*********************** FLUJO ALGUIEN DA LAS GRACIAS *******************************/
 
 const flujoSeg = addKeyword(['gracias', 'muchas gracias', 'mil gracias'])
     .addAnswer('Gracias a ti. Es un placer poder ayudarte🤗')
 
 
-// ***************************************** MAIN *************************************************//
+// ***************************************** MAIN *************************************//
 
 
 const main = async () => {
-    const adapterFlow = createFlow([flowPrincipal, flujoSeg])
-    
+    const adapterFlow = createFlow([flowPrincipal, flujoSeg, flowMenu])
     const adapterProvider = createProvider(Provider)
     const adapterDB = new Database()
 
