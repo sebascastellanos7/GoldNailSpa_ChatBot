@@ -123,7 +123,7 @@ const InfoServicios = addKeyword('2', {sensitive:true})
         ]
     )
     .addAnswer('Carta De Servicios Gold Nails Spa', {
-        media: '/home/sebascaste7/base-js-baileys-memory/Carta.pdf'
+        media: '/home/sebascastellanos7/GoldNailSpa_ChatBot/Carta.pdf'
     }
     )
     .addAnswer(
