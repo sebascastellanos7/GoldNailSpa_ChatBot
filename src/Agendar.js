@@ -1,4 +1,5 @@
 import { createBot, createProvider, createFlow, addKeyword, MemoryDB, utils } from '@builderbot/bot'
+import flowMenu from './app.js'
 
 const AgendarCita = addKeyword('1', {sensitive:true})
     .addAnswer(
@@ -27,6 +28,21 @@ const AgendarCita = addKeyword('1', {sensitive:true})
             const DataService = ctx.body
             await state.update({fechaYhora: DataService})}
         )
-    .addAnswer('Gracias por confiar en nosotros 😄. Para ver tu pedido escribe la palabra *resumen*')
+    .addAnswer('Este es el resumen de tu pedido 👇',
+        null, async (_, {flowDynamic, state}) => {
+            const allStates = state.getMyState();
+            await flowDynamic(`*Servicio:* ${allStates.nombre}.\n*Fecha y hora:* ${allStates.fechaYhora}.`)
+            }    
+        )
+    .addAnswer('*Recuerda* que estamos revisando nuestra agenda📒 y pronto nos contactaremos contigo para confirmar la cita📱.')
+    .addAnswer(
+        [
+            'Si deseas volver *🔙 Al Menú Principal* solo escribe el número *0*'
+        ],
+        {capture:true, delay:700}, async (ctx, {gotoFlow})  => 
+            {
+                if (ctx.body == '0') return gotoFlow(flowMenu);
+            }
+    )
 
 export default AgendarCita;
