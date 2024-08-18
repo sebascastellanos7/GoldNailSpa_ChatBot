@@ -116,7 +116,7 @@ const InfoServicios = addKeyword('2', {sensitive:true})
         ]
     )
     .addAnswer('Carta De Servicios Gold Nails Spa', {
-        media: '/home/sebascaste7/base-js-baileys-memory/Carta.pdf'
+        media: '/home/sebascastellanos7/GoldNailSpa_ChatBot/Carta.pdf'
     }
     )
     .addAnswer(
@@ -241,7 +241,7 @@ export default flowMenu;
 //********************************* FLOW PRIMER SALUDO CON MENU *****************************************/ 
 
 const flowPrincipal = addKeyword(['hola','ola','ole','oli','buenas tardes','buenas','buenos dias','buenas quiero una cita',
-    'para agendar una cita', 'cita','por favor una cita','tienes cupo', 'una cita', 'para un cupo','hola aleja'])
+    'para agendar una cita', 'cita','por favor una cita','tienes cupo', 'una cita', 'para un cupo'])
     .addAnswer(
         [
             '🙌 Hola bienvenid@, Soy la *IA*🤖 de *Gold Nails Spa*💅 y fui creada para ayudarte',
