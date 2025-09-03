@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { createBot, createProvider, createFlow, addKeyword, MemoryDB, utils } from '@builderbot/bot'
+import { createBot, createProvider, createFlow, addKeyword, utils} from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
 import AgendarCita from './Agendar.js';
@@ -126,7 +126,7 @@ const InfoServicios = addKeyword('2', {sensitive:true})
         ]
     )
     .addAnswer('Carta De Servicios Gold Nails Spa', {
-        media: '/home/sebascastellanos7/GoldNailSpa_ChatBot/Carta.pdf'
+        media: '/home/sebascaste7/GoldNailSpa_ChatBot/Carta.pdf'
     }
     )
     .addAnswer(
@@ -288,3 +288,5 @@ const main = async () => {
 }
 
 main()
+
+
