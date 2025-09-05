@@ -39,7 +39,7 @@ const AgendarCita = addKeyword('1', {sensitive:true})
         [
             'Si deseas volver *🔙 Al Menú Principal* solo escribe el número *0*'
         ],
-        {capture:true, delay:1000}, async (ctx, {gotoFlow, fallBack, flowDynamic})  => 
+        {capture:true, delay:500}, async (ctx, {gotoFlow, fallBack, flowDynamic})  => 
             {
                 if (ctx.body == '0') return gotoFlow(flowMenu);
                     else if (ctx.body == '1' || ctx.body == '2' || ctx.body == '00' || ctx.body == '3' || ctx.body == '4' || ctx.body == '5')

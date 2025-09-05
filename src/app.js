@@ -49,6 +49,20 @@ const AccionSi = addKeyword('1', {sensitive:true})
             await flowDynamic(`Este es el resumen de tu pedido: 👇\n*Servicio:* PROMO MES\n*Fecha y hora:* ${PromoDate}`)
         } 
     )
+    .addAnswer(
+        [
+            'Si deseas volver *🔙 Al Menú Principal* solo escribe el número *0*'
+        ],
+        {capture:true, delay:500}, async (ctx, {flowDynamic, fallBack, gotoFlow})  => 
+            {
+                if (ctx.body == '0') return gotoFlow(flowMenu);
+                else if (ctx.body == '1' || ctx.body == '2' || ctx.body == '00' || ctx.body == '3' || ctx.body == '4' || ctx.body == '5')
+                    {
+                        await flowDynamic('Al parecer🤔 quieres volver al *menú principal*, para ello debes escribir el número *0*')
+                        return fallBack()
+                    }
+            }
+    )
     
 
 const AccionNo = addKeyword('2', {sensitive:true})
@@ -57,7 +71,7 @@ const AccionNo = addKeyword('2', {sensitive:true})
             'Lamentamos que no tomes esta increible promoción🥺, quizas en otro momento.\n',
             'Si deseas volver *🔙 Al Menú Principal* solo escribe el número *0*'
         ],
-        {capture:true, delay:500}, async (ctx, {gotoFlow})  => 
+        {capture:true}, async (ctx, {gotoFlow})  => 
             {
                 if (ctx.body == '0') return gotoFlow(flowMenu);
                 else if (ctx.body == '1' || ctx.body == '2' || ctx.body == '00' || ctx.body == '3' || ctx.body == '4' || ctx.body == '5')
